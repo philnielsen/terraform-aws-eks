@@ -4,6 +4,14 @@ resource "aws_route_table" "public" {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.igw.id
   }
+
+  dynamic "route" {
+    for_each = { for vpc in var.peered_vpcs : vpc.vpc_id => vpc }
+    content {
+      cidr_block                = route.value.cidr
+      vpc_peering_connection_id = aws_vpc_peering_connection.infra_vpc_peer[route.value.vpc_id].id
+    }
+  }
   vpc_id = local.vpc_id
   tags = {
     "Name"                                   = each.value.name,
@@ -25,6 +33,19 @@ resource "aws_route_table" "private" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.ngw[each.value.zone].id
   }
+
+  dynamic "route" {
+    for_each = { for vpc in var.peered_vpcs : vpc.vpc_id => vpc }
+    content {
+      cidr_block                = route.value.cidr
+      vpc_peering_connection_id = aws_vpc_peering_connection.infra_vpc_peer[route.value.vpc_id].id
+    }
+  }
+
+  # route {
+  #   cidr_block                = var.infra_vpc_cidr
+  #   vpc_peering_connection_id = aws_vpc_peering_connection.infra_vpc_peer[0].id
+  # }
   vpc_id = local.vpc_id
   tags = {
     "Name"                                   = each.value.name,

@@ -1,11 +1,11 @@
-output "ssh_bastion_command" {
-  description = "Command to ssh into the bastion host"
-  value       = "ssh -i ${local.ssh_pvt_key_path} -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no ${local.bastion_user}@${module.bastion[0].public_ip}"
-}
+# output "ssh_bastion_command" {
+#   description = "Command to ssh into the bastion host"
+#   value       = "ssh -i ${local.ssh_pvt_key_path} -oUserKnownHostsFile=/dev/null -oStrictHostKeyChecking=no ${local.bastion_user}@${module.bastion[0].public_ip}"
+# }
 
-output "bastion_ip" {
-  value = var.create_bastion ? module.bastion[0].public_ip : ""
-}
+# output "bastion_ip" {
+#   value = var.create_bastion ? module.bastion[0].public_ip : ""
+# }
 
 output "k8s_tunnel_command" {
   description = "Command to run the k8s tunnel mallory."
@@ -39,4 +39,14 @@ output "domino_key_pair" {
 
 output "kubeconfig" {
   value = local.kubeconfig_path
+}
+
+data "aws_iam_account_alias" "current" {}
+
+output "account_id" {
+  value = data.aws_iam_account_alias.current.account_alias
+}
+
+output "peered_vpc" {
+  value = var.peered_vpcs
 }

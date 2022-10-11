@@ -114,9 +114,11 @@ resource "aws_eks_addon" "this" {
   ]
 }
 
+data "aws_iam_account_alias" "current" {}
+
 resource "null_resource" "kubeconfig" {
   provisioner "local-exec" {
-    command = "aws eks update-kubeconfig --kubeconfig ${var.kubeconfig_path} --region ${var.region} --name ${aws_eks_cluster.this.name}"
+    command = "aws eks --profile=${data.aws_iam_account_alias.current.id} update-kubeconfig --kubeconfig ${var.kubeconfig_path} --region ${var.region} --name ${aws_eks_cluster.this.name}"
   }
   triggers = {
     domino_eks_cluster_ca = aws_eks_cluster.this.certificate_authority[0].data

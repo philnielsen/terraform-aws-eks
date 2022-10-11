@@ -58,3 +58,13 @@ variable "monitoring_s3_bucket_arn" {
   type        = string
   description = "Monitoring bucket for vpc flow logging"
 }
+
+variable "peered_vpcs" {
+  description = "infra vpc"
+  type = list(object({
+    vpc_id     = string
+    account_id = string
+    region     = string
+    cidr       = string
+  }))
+}

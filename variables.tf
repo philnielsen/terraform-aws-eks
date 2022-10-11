@@ -227,3 +227,15 @@ variable "kubeconfig_path" {
   type        = string
   default     = ""
 }
+
+# Braze specific Variables
+
+variable "peered_vpcs" {
+  description = "infra vpc"
+  type = list(object({
+    vpc_id     = string
+    account_id = string
+    region     = string
+    cidr       = string
+  }))
+}

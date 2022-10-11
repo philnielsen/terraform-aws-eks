@@ -88,6 +88,7 @@ module "network" {
   base_cidr_block          = var.base_cidr_block
   vpc_id                   = var.vpc_id
   monitoring_s3_bucket_arn = module.storage.s3_buckets["monitoring"].arn
+  peered_vpcs              = var.peered_vpcs
 }
 
 locals {

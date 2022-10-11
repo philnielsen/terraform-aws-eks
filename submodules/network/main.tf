@@ -85,3 +85,14 @@ resource "aws_flow_log" "this" {
   log_destination_type     = "s3"
   traffic_type             = "REJECT"
 }
+
+resource "aws_vpc_peering_connection" "infra_vpc_peer" {
+  for_each      = { for vpc in var.peered_vpcs : vpc.vpc_id => vpc }
+  peer_owner_id = each.value.account_id
+  peer_vpc_id   = each.value.vpc_id
+  vpc_id        = local.vpc_id
+  peer_region   = each.value.region != "" ? each.value.region : var.region
+  tags = {
+    "Name" = "${var.deploy_id}-to-infra"
+  }
+}
